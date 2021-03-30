@@ -1,5 +1,5 @@
 # AI-assignments
-Implementing some Artificial Intelligence algorithms
+Implementing the following Artificial Intelligence algorithms
 
 1. Write a program (C/Python) to solve the 8-queen problem using stochastic hill climbing search strategy. 
 You should report the following for the search strategy:
