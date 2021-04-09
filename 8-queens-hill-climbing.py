@@ -6,7 +6,7 @@ try:
 except ImportError:
   pass
 
-
+# generating a random board with 8 queens
 class board:
   def __init__(self, list=None):
     if list == None:
@@ -19,7 +19,7 @@ class board:
           if self.board[rand_row][rand_col] == 0:
             self.board[rand_row][rand_col] = "Q"
             break
-    #TODO raise errors if board is not right format or dimension
+   
   #define how to print the board
   def __repr__(self):
     mstr = ""
@@ -31,22 +31,22 @@ class board:
 
 class queens:
   def __init__(self, numruns, verbocity, passedboard=None):
-    #TODO check options
+    #checking options
     self.totalruns = numruns
     self.totalsucc = 0
     self.totalnumsteps = 0
     self.verbocity = verbocity
-    for i in range(0,numruns):
+    for i in range(0,numruns):  # printing boards
       if self.verbocity == True:
-        print "%%%%%%%%%%%%%%%%%%%%%%%"
-        print "BOARD",i
-        print "%%%%%%%%%%%%%%%%%%%%%%%"
+        print ("%%%%%%%%%%%%%%%%%%%%%%%")
+        print ("BOARD",i)
+        print ("%%%%%%%%%%%%%%%%%%%%%%%")
        
       self.mboard = board(passedboard)
-      self.cost = self.calc_cost(self.mboard)
-      self.hill_solution()
+      self.cost = self.calc_cost(self.mboard)  # calculating cost
+      self.hill_solution()  # calling hill climbing algo function
 
-  def hill_solution(self):
+  def hill_solution(self):  # hill climbing algo
     while 1:
       currViolations = self.cost
       self.getlowercostboard()
@@ -54,40 +54,43 @@ class queens:
         break
       self.totalnumsteps += 1
       if self.verbocity == True:
-        print "Board Violations", self.calc_cost(self.mboard)
-        print self.mboard
+        print ("Board Violations", self.calc_cost(self.mboard)) # checking for violations, whether board generated is valid or not
+        print (self.mboard)
+    # if board is invalid and no further function calls possible
     if self.cost != 0:
-      if self.verbocity == True:
-        print "NO SOLUTION FOUND"
+      if self.verbocity == True:  
+        print ("NO SOLUTION FOUND")
+    # if resultant board is valid according to constraints
     else:
       if self.verbocity == True:
-        print "SOLUTION FOUND"
+        print ("SOLUTION FOUND")
       self.totalsucc += 1
     return self.cost
 
+  #printing other info
   def printstats(self):
-    print "Total Runs: ", self.totalruns
-    print "Total Success: ", self.totalsucc
-    print "Success Probability: ", float(self.totalsucc)/float(self.totalruns)
-    print "Number of steps: ", float(self.totalnumsteps)/float(self.totalruns)
+    print ("Total Runs: ", self.totalruns)
+    print ("Total Success: ", self.totalsucc)
+    print ("Success Probability: ", float(self.totalsucc)/float(self.totalruns))
+    print ("Number of steps: ", float(self.totalnumsteps)/float(self.totalruns))
 
   def calc_cost(self, tboard):
-    #these are separate for easier debugging
+    
     totalhcost = 0
     totaldcost = 0
     for i in range(0,8):
       for j in range(0,8):
-        #if this node is a queen, calculate all violations
+        # if this node is a queen, check all violations in all directions
         if tboard.board[i][j] == "Q":
-          #subtract 2 so don't count self
-          #sideways and vertical
+          # subtract 2 so don't count self
+          # checking sideways and vertical violations
           totalhcost -= 2
           for k in range(0,8):
             if tboard.board[i][k] == "Q":
               totalhcost += 1
             if tboard.board[k][j] == "Q":
               totalhcost += 1
-          #calculate diagonal violations
+          # checking diagonal violations
           k, l = i+1, j+1
           while k < 8 and l < 8:
             if tboard.board[k][l] == "Q":
@@ -114,20 +117,19 @@ class queens:
             l -=1
     return ((totaldcost + totalhcost)/2)
 
-  #this function tries moving every queen to every spot, with only one move
-  #and returns the move that has the least number of violations
+  # this function tries moving every queen to every spot, with only one move and returns the move that has the least number of violations
   def getlowercostboard(self):
     lowcost = self.calc_cost(self.mboard)
     lowestavailable = self.mboard
-    #move one queen at a time, the optimal single move by brute force
+    # move one queen at a time, the optimal single move by brute force method
     for q_row in range(0,8):
       for q_col in range(0,8):
         if self.mboard.board[q_row][q_col] == "Q":
-          #get the lowest cost by moving this queen
+          # get the lowest cost by moving this queen
           for m_row in range(0,8):
             for m_col in range(0,8):
               if self.mboard.board[m_row][m_col] != "Q":
-                #try placing the queen here and see if it's any better
+                # try placing the queen here and see if it is a better position and valid
                 tryboard = copy.deepcopy(self.mboard)
                 tryboard.board[q_row][q_col] = 0
                 tryboard.board[m_row][m_col] = "Q"
